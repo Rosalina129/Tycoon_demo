@@ -1,0 +1,62 @@
+.-gamebox-moneys{
+    display:flex;
+    align-items: center;
+    border: 2px black solid;
+    width:max-content;
+}
+
+#money-icon{
+    padding:0 16px 0 16px;
+}
+#moneynumber{
+    padding: 0 16px 0 0;
+}
+
+.-gamebox-resource-info-box{
+    text-align: left;
+    margin:1em 0px;
+    width:360px;
+    height:256px;
+    border:2px #000000 solid;
+}
+
+.-gamebox-resource-info-title {
+    text-align: left;
+    padding: 8px 8px 8px 16px;
+    font-size: 1.5em;
+    font-weight: 600;
+    background: #3F51B5;
+    color: white;
+}
+
+.-gamebox-resource-info-buy {
+    display: flex;
+    text-align: right;
+    justify-content: flex-end;
+    position: relative;
+    left: 200px;
+    width: max-content;
+    top: -42px;
+}
+
+.-gamebox-resource-info-buy-text {
+    padding: 0px 4px;
+}
+
+.-gamebox-resource-info-message {
+    height: 212px;
+}
+
+.-gamebox-resource-info-amount {
+    position: relative;
+    font-size: 48px;
+    padding-right:16px;
+    display: block;
+    top: -64px;
+    text-align:right;
+}
+
+.-gamebox-resource-info-describe {
+    position: relative;
+    margin: 16px;
+}

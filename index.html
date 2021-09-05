@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/game.css">
+    </head>
+    <body>
+        <div class="cursor -gamebox" align="center">
+            <div class="-gamebox-moneys">
+                <div id="money-icon">
+                    Coins
+                </div>
+                <div id="moneynumber">
+                    0
+                </div>
+            </div>
+            <div class="-gamebox-resources-all">
+                <div class="-gamebox-resource-info-box">
+                    <div class="-gamebox-resource-info-message">
+                        <div class="-gamebox-resource-info-title">
+                            Coal Miner
+                        </div>
+                        <div class="-gamebox-resource-info-describe" id="-gamebox-describe-a">
+                            It's a small mine that can only get a tiny amount of coal. 0
+                        </div>
+                    </div>
+                    <div class="-gamebox-resource-info-amount" id="-gamebox-resourcehave-a">
+                        0
+                    </div>
+                    <div class="-gamebox-resource-info-buy" style="cursor: pointer; user-select: none;" id="-gamebox-needcoinclick-a">
+                        <div class="-gamebox-resource-info-buy-text">
+                            Buy
+                        </div>
+                        <div class="-gamebox-resource-info-buy-text" id="-gamebox-needcoin-a">
+                            50
+                        </div>
+                        <div class="-gamebox-resource-info-buy-text">
+                            Coins
+                        </div>
+                    </div>
+                </div>
+                <div class="-gamebox-resource-info-box">
+                    <div class="-gamebox-resource-info-message">
+                        <div class="-gamebox-resource-info-title">
+                            Copper Miner
+                        </div>
+                        <div class="-gamebox-resource-info-describe" id="-gamebox-describe-b">
+                            A copper mine with a little copper and a lot of iron. 0
+                        </div>
+                    </div>
+                    <div class="-gamebox-resource-info-amount" id="-gamebox-resourcehave-b">
+                        0
+                    </div>
+                    <div class="-gamebox-resource-info-buy" style="cursor: pointer; user-select: none;" id="-gamebox-needcoinclick-b">
+                        <div class="-gamebox-resource-info-buy-text">
+                            Buy
+                        </div>
+                        <div class="-gamebox-resource-info-buy-text" id="-gamebox-needcoin-b">
+                            1.00K
+                        </div>
+                        <div class="-gamebox-resource-info-buy-text">
+                            Coins
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var game = {    //初始化内部数据
+                coin : 0,   //金币数
+                tier : 0,   //阶数
+                coinsdelay : 150,   //金币获取延迟
+                resource_a_amount_coinsdelay : 1000,    //资源 1 金币获取延迟
+                resource_a_collector : 0,               //资源 1 金币数
+                resource_a_amount : 0,                  //资源 1 数量
+                resource_a_cost : 50,                   //资源 1 消耗数
+
+                resource_b_amount_coinsdelay : 1500,    //资源 2 金币获取延迟
+                resource_b_collector : 0,               //资源 2 金币数
+                resource_b_amount : 0,                  //资源 2 数量
+                resource_b_cost : 1000,                 //资源 2 消耗数
+            }
+            var display = { //初始化显示数据（用来作用给HTML上面的数据。）
+                coin : document.getElementById('moneynumber'),
+                resource_a_amount : document.getElementById('-gamebox-resourcehave-a'),
+                resource_a_cost : document.getElementById('-gamebox-needcoin-a'),
+                resource_b_amount : document.getElementById('-gamebox-resourcehave-b'),
+                resource_b_cost : document.getElementById('-gamebox-needcoin-b'),
+            }
+            var a = 0;
+            function add(addtarget) {   //加金币函数，作用是将获取的金币加进去。
+                game.coin += addtarget;
+                display.coin.innerHTML = dataformat(Math.round(game.coin),display.coin);
+            }
+            
+            function dataformat(data,displaydata) {     //格式转换，作用是应付给数值超级大的数。
+                if (data >= 1e3 && data <= 1e6)   {     //1e 3n代表千进制。
+                    data /= 1e3;
+                    displaydata = (data.toFixed(2) + "K");
+                    return displaydata;
+                }
+                else if (data >= 1e6 && data <= 1e9)   {
+                    data /= 1e6;
+                    displaydata = data;
+                    displaydata = (data.toFixed(2) + "M");
+                    return displaydata;
+                }
+                else if (data >= 1e9 && data <= 1e12)   {
+                    data /= 1e9;
+                    displaydata = data;
+                    displaydata = (data.toFixed(2) + "G");
+                    return displaydata;
+                }
+                else if (data >= 1e12 && data <= 1e15)   {
+                    data /= 1e12;
+                    displaydata = data;
+                    displaydata.innerHTML = (data.toFixed(2) + "T");
+                    return displaydata;
+                }
+                else if (data >= 1e15 && data <= 1e18)   {
+                    data /= 1e15;
+                    displaydata = data;
+                    displaydata.innerHTML = (data.toFixed(2) + "P");
+                    return displaydata;
+                }
+                else if (data >= 1e18 && data <= 1e21)   {
+                    data /= 1e18;
+                    displaydata = data;
+                    displaydata.innerHTML = (data.toFixed(2) + "E");
+                    return displaydata;
+                }
+                else return data;
+            }
+
+            setInterval('add(1)',game.coinsdelay);          //默认增加金币程序
+
+            setInterval("add(game.resource_a_collector)",game.resource_a_amount_coinsdelay);    //资源 1 增加金币程序
+
+            setInterval("add(game.resource_b_collector)",game.resource_b_amount_coinsdelay);    //资源 2 增加金币程序
+
+            document.getElementById('-gamebox-needcoinclick-a').onclick = function() {  //资源 1 购买程序
+                    if ( game.coin >= game.resource_a_cost ) {  //判断 金币是否足够购买资源
+                    game.coin -= game.resource_a_cost;          //减法
+                    game.resource_a_amount += 1;                //增加数量
+                    game.resource_a_collector += 5;             //增加金币获取数量
+                    console.log(game.resource_a_amount);
+                    game.resource_a_cost *= 1.1;               //将消耗数以指数相乘
+                    Math.round(game.resource_a_cost);
+                    console.log(game.resource_a_cost);
+                    console.log("Buy Complete");
+                } else {console.log("Buy failed");display.coin.innerHTML = dataformat(Math.round(game.coin),display.coin);};             //购买失败会提示。
+                document.getElementById('-gamebox-describe-a').innerHTML = ("It's a small mine that can only get a tiny amount of coal. " + game.resource_a_collector)
+                /* 显示刷新 */
+                display.resource_a_amount.innerHTML = game.resource_a_amount;
+                display.resource_a_cost.innerHTML = dataformat(Math.round(game.resource_a_cost),display.resource_a_cost);
+                display.coin.innerHTML = dataformat(Math.round(game.coin),display.coin);
+            }
+
+            document.getElementById('-gamebox-needcoinclick-b').onclick = function() {  //资源 2 购买程序，原理同上
+                if ( game.coin >= game.resource_b_cost ) {
+                    game.coin -= game.resource_b_cost;
+                    game.resource_b_amount += 1;
+                    game.resource_b_collector += 8;
+                    console.log(game.resource_b_amount);
+                    game.resource_b_cost *= 1.14;
+                    Math.round(game.resource_b_cost);
+                    console.log(game.resource_b_cost);
+                    console.log("Buy Complete");
+                } else {console.log("Buy failed");display.coin.innerHTML = dataformat(Math.round(game.coin),display.coin);};
+                document.getElementById('-gamebox-describe-b').innerHTML = ("A copper mine with a little copper and a lot of iron. " + game.resource_b_collector)
+                display.resource_b_amount.innerHTML = game.resource_b_amount;
+                display.resource_b_cost.innerHTML = dataformat(Math.round(game.resource_b_cost),display.resource_b_cost);
+                display.coin.innerHTML =  Math.round(game.coin);
+            }
+
+        </script>
+    </body>
+</html>
